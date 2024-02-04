@@ -1,0 +1,18 @@
+{
+    "seed": 1233,
+    "experiments": [
+        {
+            "attack": {
+                "name": "fixed-Sparse-RS",
+                "params": {
+                    "steps":200,
+                    "epsilon":50
+                }
+            },
+            "dataset": "mnist",
+            "model": "smallcnn_ddn",
+            "n_samples": 100,
+            "batch_size": 32
+        }
+    ]
+}

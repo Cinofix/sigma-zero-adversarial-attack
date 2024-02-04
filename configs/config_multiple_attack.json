@@ -1,0 +1,81 @@
+{
+    "seed": 1233,
+    "experiments": [
+        {
+            "attack": {
+                "name": "VFGA",
+                "params": {
+                    "targeted":false,
+                    "max_iter":100
+                }
+            },
+            "dataset": "mnist",
+            "model": "smallcnn_ddn",
+            "n_samples": 100,
+            "batch_size": 16
+        },
+        {
+            "attack": {
+                "name": "EAD",
+                "params": {
+                    "steps":100
+                }
+            },
+            "dataset": "mnist",
+            "model": "smallcnn_ddn",
+            "n_samples": 100,
+            "batch_size": 16
+        },
+        {
+            "attack": {
+                "name": "PDPGD",
+                "params": {
+                    "norm":0,
+                    "num_steps":100
+                }
+            },
+            "dataset": "mnist",
+            "model": "smallcnn_ddn",
+            "n_samples": 100,
+            "batch_size": 16
+        },
+        {
+            "attack": {
+                "name": "DTBB",
+                "params": {
+                    "steps":100
+                }
+            },
+            "dataset": "mnist",
+            "model": "smallcnn_ddn",
+            "n_samples": 100,
+            "batch_size": 16
+        },
+        {
+            "attack": {
+                "name": "FMN",
+                "params": {
+                    "steps":100,
+                    "norm":0
+                }
+            },
+            "dataset": "mnist",
+            "model": "smallcnn_ddn",
+            "n_samples": 100,
+            "batch_size": 16
+        },
+        {
+            "attack": {
+                "name": "sigma_zero",
+                "params": {
+                    "steps":100
+                }
+            },
+            "dataset": "mnist",
+            "model": "smallcnn_ddn",
+            "n_samples": 100,
+            "batch_size": 16
+        }
+
+    ]
+}
