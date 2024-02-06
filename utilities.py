@@ -61,7 +61,7 @@ def run_attack(model: nn.Module,
     targeted = True if targets is not None else False
     loader_length = len(loader)
 
-    # start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
+    start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
     forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
     model.register_forward_pre_hook(forward_counter)
     if LooseVersion(torch.__version__) >= LooseVersion('1.8'):
@@ -104,7 +104,7 @@ def run_attack(model: nn.Module,
         ori_success.extend(success.cpu().tolist())
 
         forward_counter.reset(), backward_counter.reset()
-        # start.record()
+        start.record()
 
         if device != torch.device('cpu'):
             torch.cuda.reset_peak_memory_stats(device=device)
@@ -117,14 +117,12 @@ def run_attack(model: nn.Module,
                 print('\n WARNING: ran out of memory, cannot perform this specific attack with this batch size')
                 exit()
             else:
-                adv_inputs = inputs
                 print(e)
 
-        # torch.cuda.empty_cache()
-        # end.record()
-        # torch.cuda.synchronize()
-        # times.append((start.elapsed_time(end)) / 1000)  # times for cuda Events are in milliseconds
-        times.append(0)
+        torch.cuda.empty_cache()
+        end.record()
+        torch.cuda.synchronize()
+        times.append((start.elapsed_time(end)) / 1000)  # times for cuda Events are in milliseconds
 
         forwards.append(forward_counter.num_samples_called)
         backwards.append(backward_counter.num_samples_called)
