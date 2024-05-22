@@ -1,0 +1,68 @@
+{
+  "seed": 1233,
+  "experiments": [
+    {
+      "attack": {
+        "name": "PDPGD",
+        "params": {
+          "num_steps": 1000,
+          "norm": 0
+        }
+      },
+      "dataset": "cifar10",
+      "model": "addepalli2022",
+      "n_samples": 100,
+      "batch_size": 32
+    },
+    {
+      "attack": {
+        "name": "VFGA",
+        "params": {
+          "max_iter": 1000,
+          "targeted": false
+        }
+      },
+      "dataset": "cifar10",
+      "model": "addepalli2022",
+      "n_samples": 100,
+      "batch_size": 32
+    },
+    {
+      "attack": {
+        "name": "FMN",
+        "params": {
+          "steps": 1000,
+          "norm": 0
+        }
+      },
+      "dataset": "cifar10",
+      "model": "addepalli2022",
+      "n_samples": 100,
+      "batch_size": 32
+    },
+    {
+      "attack": {
+        "name": "DTBB",
+        "params": {
+          "steps": 1000
+        }
+      },
+      "dataset": "cifar10",
+      "model": "addepalli2022",
+      "n_samples": 100,
+      "batch_size": 32
+    },
+    {
+      "attack": {
+        "name": "sigma_zero",
+        "params": {
+          "steps": 100
+        }
+      },
+      "dataset": "cifar10",
+      "model": "addepalli2022",
+      "n_samples": 100,
+      "batch_size": 32
+    }
+  ]
+}
