@@ -253,9 +253,9 @@ class SparsePGD(object):
         mask_best = mask.clone()
         perturb_best = perturb.clone()
 
-        training = self.model.training
-        if training:
-            self.model.eval()
+        # training = self.model.training
+        # if training:
+        #     self.model.eval()
 
         ind_all = torch.arange(b).to(x.device)
         reinitial_count = torch.zeros(b, dtype=torch.long, device=x.device)
@@ -401,8 +401,8 @@ class SparsePGD(object):
                 acc_list.append(acc.sum().item())
             if torch.sum(acc) == 0.:
                 break
-        if training:
-            self.model.train()
+        # if training:
+        #     self.model.train()
         if self.verbose:
             if len(acc_list) != self.t // self.verbose_interval:
                 acc_list += [acc_list[-1]] * (self.t // self.verbose_interval - len(acc_list))
