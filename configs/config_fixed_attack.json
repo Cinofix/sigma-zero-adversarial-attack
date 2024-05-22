@@ -6,7 +6,7 @@
         "name": "sparse-PGD",
         "params": {
           "steps": 1000,
-          "epsilon": 50
+          "k": 50
         }
       },
       "dataset": "mnist",
@@ -18,7 +18,7 @@
       "attack": {
         "name": "fixed-Sparse-RS",
         "params": {
-          "steps": 1000,
+          "steps": 2000,
           "epsilon": 50
         }
       },
