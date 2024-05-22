@@ -598,7 +598,7 @@ def EAD_attack(model: nn.Module,
 def sparse_PGD(model: nn.Module,
                inputs: Tensor,
                labels: Tensor,
-               epsilon: float,
+               epsilon: float = 255 / 255,
                k: int = 20,
                steps: int = 10000,
                unprojected_gradient: bool = True,
@@ -607,7 +607,13 @@ def sparse_PGD(model: nn.Module,
                beta: float = 0.25,
                verbose: bool = False,
                **kwargs):
+    model = SingleChannelModel(model, inputs.shape[1:])
+    bs, c, h, w = inputs.shape
+    inputs = inputs.reshape(bs, 1, h, w * c)
     attacker = SparsePGD(model=model, epsilon=epsilon, k=k, t=steps, unprojected_gradient=unprojected_gradient,
                          patience=patience, alpha=alpha, beta=beta, verbose=verbose)
-    advs, _, _, _, _ = attacker.perturb(inputs, labels)
-    return advs
+    if verbose:
+        advs, _, _, _ = attacker.perturb(inputs, labels)
+    else:
+        advs, _, _ = attacker.perturb(inputs, labels)
+    return advs.reshape(bs, c, h, w)

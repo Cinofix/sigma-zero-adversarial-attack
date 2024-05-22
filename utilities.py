@@ -61,7 +61,7 @@ def run_attack(model: nn.Module,
     targeted = True if targets is not None else False
     loader_length = len(loader)
 
-    if device == torch.device("cuda"):
+    if device.type == 'cuda':
         start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
     else:
         start, end = 0, 0
@@ -108,7 +108,7 @@ def run_attack(model: nn.Module,
         ori_success.extend(success.cpu().tolist())
 
         forward_counter.reset(), backward_counter.reset()
-        if device == torch.device('cuda'):
+        if device.type == 'cuda':
             start.record()
             torch.cuda.reset_peak_memory_stats(device=device)
         try:
@@ -124,7 +124,7 @@ def run_attack(model: nn.Module,
 
         torch.cuda.empty_cache()
         elapsed_time = 0
-        if device == torch.device('cuda'):
+        if device.type == 'cuda':
             end.record()
             torch.cuda.synchronize()
             elapsed_time = (start.elapsed_time(end)) / 1000  # times for cuda Events are in milliseconds
@@ -151,7 +151,7 @@ def run_attack(model: nn.Module,
             distances[metric].extend(metric_func(adv_inputs, inputs).detach().cpu().tolist())
 
     max_memory = 0
-    if device != torch.device('cpu'):
+    if device.type == 'cuda':
         max_memory = torch.cuda.max_memory_allocated(device=device) / 1024 / 1024
 
     data = {
