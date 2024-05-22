@@ -3,15 +3,27 @@
     "experiments": [
         {
             "attack": {
-                "name": "fixed-Sparse-RS",
+                "name": "sparse-PGD",
                 "params": {
-                    "steps":200,
+                    "steps":1000,
                     "epsilon":50
                 }
             },
-            "dataset": "mnist",
-            "model": "smallcnn_ddn",
+            "dataset": "cifar10",
+            "model": "pretr_L1",
             "n_samples": 100,
+            "batch_size": 32
+        },
+                {
+            "attack": {
+                "name": "sigma_zero",
+                "params": {
+                    "steps":1000
+                }
+            },
+            "dataset": "cifar10",
+            "model": "pretr_L1",
+            "n_samples": 300,
             "batch_size": 32
         }
     ]

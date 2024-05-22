@@ -5,15 +5,12 @@ from functools import partial
 import os
 import pickle
 import torch
+
+from attacks import get_attack
 from utilities import set_seed, save_examples, show_salient_statistics, generate_experiment_name
 import argparse
 
-from adv_lib.attacks.fast_minimum_norm import fmn
-from adv_lib.attacks.stochastic_sparse_attacks import vfga
-from adv_lib.attacks.primal_dual_gradient_descent import pdpgd
-from utils.attack_wrappers import sparsefool, PGD0, binary_PGD0, binary_sparse_rs, sparse_rs, dataset_BB_attack, \
-    BB_attack, EAD_attack
-from sigma_zero import sigma_zero
+
 
 from model import get_local_model
 from dataset import get_dataset_loaders
@@ -56,7 +53,7 @@ def process_and_save_results(experiment_name, stats, config, dataset, model_name
     if "inputs" in stats and "adv_inputs" in stats:
 
         if show_preview == True:
-            save_examples(experiment_folder_path, stats, 0, 4)
+            save_examples(experiment_folder_path, stats, 0, 1)
 
         if save_adversarial == True:
             inputs_file_path = f"{experiment_folder_path}/inputs.pkl"
@@ -109,25 +106,8 @@ def main():
         model = model.to(device)
 
         print(f"Chosen attack: {experiment['attack']['name']}")
-        test_attacks = {
-            'DTBB': partial(dataset_BB_attack),
-            'BB': partial(BB_attack),
-            'PGD0': partial(binary_PGD0),
-            'fixed-PGD0': partial(PGD0),
-            'Sparse-RS': partial(binary_sparse_rs),
-            'fixed-Sparse-RS': partial(sparse_rs),
-            'SPARSEFOOL': partial(sparsefool),
-            'EAD': partial(EAD_attack),
-            'VFGA': partial(vfga),
-            'PDPGD': partial(pdpgd),
-            'FMN': partial(fmn),
-            'sigma_zero': partial(sigma_zero),
-        }
 
-        if attack_name in test_attacks:
-            attack_func = test_attacks[attack_name]
-        else:
-            raise ValueError("Unknown attack: " + attack_name)
+        attack_func = get_attack(attack_name)
 
         torch.cuda.empty_cache()
         stats = run_attack(

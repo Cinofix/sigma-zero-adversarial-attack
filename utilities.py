@@ -61,7 +61,11 @@ def run_attack(model: nn.Module,
     targeted = True if targets is not None else False
     loader_length = len(loader)
 
-    start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
+    if device == torch.device("cuda"):
+        start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
+    else:
+        start, end = 0, 0
+
     forward_counter, backward_counter = ForwardCounter(), BackwardCounter()
     model.register_forward_pre_hook(forward_counter)
     if LooseVersion(torch.__version__) >= LooseVersion('1.8'):
@@ -104,9 +108,8 @@ def run_attack(model: nn.Module,
         ori_success.extend(success.cpu().tolist())
 
         forward_counter.reset(), backward_counter.reset()
-        start.record()
-
-        if device != torch.device('cpu'):
+        if device == torch.device('cuda'):
+            start.record()
             torch.cuda.reset_peak_memory_stats(device=device)
         try:
             adv_inputs = attack[1](model, inputs, labels)
@@ -120,9 +123,12 @@ def run_attack(model: nn.Module,
                 print(e)
 
         torch.cuda.empty_cache()
-        end.record()
-        torch.cuda.synchronize()
-        times.append((start.elapsed_time(end)) / 1000)  # times for cuda Events are in milliseconds
+        elapsed_time = 0
+        if device == torch.device('cuda'):
+            end.record()
+            torch.cuda.synchronize()
+            elapsed_time = (start.elapsed_time(end)) / 1000  # times for cuda Events are in milliseconds
+        times.append(elapsed_time)
 
         forwards.append(forward_counter.num_samples_called)
         backwards.append(backward_counter.num_samples_called)
