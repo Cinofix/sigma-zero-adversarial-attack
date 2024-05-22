@@ -266,7 +266,7 @@ class RSAttack():
 
                 x_best = x.clone()
                 n_pixels = h * w
-                b_all, be_all = torch.zeros([x.shape[0], eps]).long(), torch.zeros([x.shape[0], n_pixels - eps]).long()
+                b_all, be_all = torch.zeros([x.shape[0], eps]).long().to(self.device), torch.zeros([x.shape[0], n_pixels - eps]).long().to(self.device)
                 for img in range(x.shape[0]):
                     ind_all = torch.randperm(n_pixels)
                     ind_p = ind_all[:eps]
@@ -280,7 +280,7 @@ class RSAttack():
 
                 for it in range(1, self.n_queries):
                     # check points still to fool
-                    idx_to_fool = (margin_min > 0.).nonzero().squeeze()
+                    idx_to_fool = (margin_min > 0.).nonzero().squeeze().to(self.device)
                     x_curr = self.check_shape(x[idx_to_fool])
                     x_best_curr = self.check_shape(x_best[idx_to_fool])
                     y_curr = y[idx_to_fool]
@@ -345,7 +345,7 @@ class RSAttack():
                         b_all[idx_to_fool[idx_improved]] = t.clone()
                         be_all[idx_to_fool[idx_improved]] = te.clone()
 
-                    # log results current iteration
+                    # log results_1 current iteration
                     ind_succ = (margin_min <= 0.).nonzero().squeeze()
                     if self.verbose and ind_succ.numel() != 0:
                         self.logger.log(' '.join(['{}'.format(it + 1),
@@ -481,7 +481,7 @@ class RSAttack():
                         patches_coll[idx_to_fool[idx_improved]] = patches_new[idx_improved].clone()
                         loc[idx_to_fool[idx_improved]] = loc_new[idx_improved].clone()
 
-                    # log results current iteration
+                    # log results_1 current iteration
                     ind_succ = (margin_min <= 0.).nonzero().squeeze()
                     if self.verbose and ind_succ.numel() != 0:
                         self.logger.log(' '.join(['{}'.format(it + 1),
@@ -734,7 +734,7 @@ class RSAttack():
                         margin_min[idx_to_fool[idx_improved]] = margin[idx_improved].clone()
                         x_best[idx_to_fool[idx_improved]] = x_new[idx_improved].clone()
 
-                    # log results current iteration
+                    # log results_1 current iteration
                     ind_succ = (margin_min <= 0.).nonzero().squeeze()
                     if self.verbose and ind_succ.numel() != 0:
                         self.logger.log(' '.join(['{}'.format(it + 1),
