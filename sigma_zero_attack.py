@@ -12,8 +12,8 @@ def sigma_zero(model: nn.Module,
                sigma: float = 1e-3,
                threshold: float = 0.3,
                verbose: bool = False,
-               epsilon_budget: int = 0,
-               grad_norm = torch.inf,
+               epsilon_budget=None,
+               grad_norm=torch.inf,
                ):
     clamp = lambda tensor: tensor.data.add_(inputs.data).clamp_(min=0, max=1).sub_(inputs.data)
     l0_approximation = lambda tensor, sigma: tensor.square().div(tensor.square().add(sigma)).sum(dim=1)
@@ -30,8 +30,8 @@ def sigma_zero(model: nn.Module,
     scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=steps, eta_min=lr / 10)
     best_delta = delta.clone()
     query_mask = torch.full((batch_size,), True, device=device)
-    best_l0 = torch.full((query_mask.sum(),), max_size, device=device) 
-    is_adv_below_eps = torch.full((query_mask.sum(),), False, device=device) 
+    best_l0 = torch.full((batch_size,), max_size, device=device)
+    is_adv_below_eps = torch.full((batch_size,), False, device=device)
     th = torch.ones(size=inputs.shape, device=device) * threshold
 
     for i in range(steps):
@@ -49,7 +49,7 @@ def sigma_zero(model: nn.Module,
         true_l0 = delta[query_mask].data.flatten(1).ne(0).sum(dim=1)
         is_not_adv = predicted_classes == labels[query_mask]
         is_smaller = true_l0 < best_l0[query_mask]
-        is_both =  ~is_not_adv & is_smaller
+        is_both = ~is_not_adv & is_smaller
         best_l0[query_mask] = torch.where(is_both, true_l0.detach(), best_l0[query_mask])
         best_delta[query_mask] = torch.where(batch_view(is_both), delta[query_mask].data.clone().detach(), best_delta[query_mask])
         is_adv_below_eps = best_l0 <= epsilon_budget if epsilon_budget is not None else is_adv_below_eps
