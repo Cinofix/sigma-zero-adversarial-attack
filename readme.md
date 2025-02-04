@@ -2,7 +2,7 @@
 
 This code is the official PyTorch implementation of the **σ-zero: Gradient-based Optimization of ℓ0-norm Adversarial Examples**.
 
-![Image1](sigma-zero_optimization.jpg)
+![Image1](git_images/sigma-zero_optimization.jpg)
 
 The leftmost plot shows an instance of σ-zero’s execution on a two-dimensional problem. The initial point x (red dot) is modified via gradient descent to find the adversarial example x* (green star) while minimizing the number of perturbed features (i.e., the ℓ0 norm of the perturbation). The gray lines surrounding x demarcate regions where the ℓ0 norm is minimized. The rightmost plot shows the adversarial images (top row) and the corresponding perturbations (bottom row) found by σ-zero during the three steps highlighted in the leftmost plot, alongside their prediction and ℓ0 norm.
 ## Dependencies and Reproducibility
@@ -68,9 +68,34 @@ python main.py --device=cpu --config=configs/config_single_attack.json
 After having executed the main function, a folder structure inside **results/**" will be created containing
 results, salient statistics and some resulting adversarial images.
 
+### Usage
+The σ-zero attack is implemented as a function, so it can be called directly in the following way:
+```python
+from sigma_zero_attack import sigma_zero
+adv_samples = sigma_zero(model=model, inputs=inputs, labels=labels)
+```
+with required parameters:
+- `model`: the model that produces logits with inputs in $[0, 1]$;
+- `inputs`: the samples to attack in $[0, 1]$;
+- `labels`: the ground-truth labels for the samples.
+
+and more which are optional:
+- `steps`: number of iteration steps made by the attack;
+- `lr`: learning rate parameter for the optimizer;
+- `sigma`: $\sigma$ parameter for the $\ell_0$-norm approximation;
+- `threshold`: initial value for the dynamic thresholding;
+- `verbose`: flag used to show informations during the optimization process;
+- `epsilon_budget`: threshold for the early stopping mechanism to stop the optimization of an adversarial examples when an adversarial examples with a lower perturbation budget than $\epsilon$ is found;
+- `grad_norm`: which norm is used to perform the normalization of the gradients.
+
 ## Acknowledgements
+The authors would like to thank the contributors of [adversarial-library](https://github.com/jeromerony/adversarial-library), [RobustBench](https://github.com/RobustBench/robustbench) and [Torchattacks](https://github.com/Harry24k/adversarial-attacks-pytorch) for having facilitated the development of this project.
 
-The authors would like to thank:
+$\sigma$-zero has been partially developed with the support of European Union’s [ELSA – European Lighthouse on Secure and Safe AI](https://elsa-ai.eu), Horizon Europe, grant agreement No. 101070617, and [Sec4AI4Sec - Cybersecurity for AI-Augmented Systems](https://www.sec4ai4sec-project.eu), Horizon Europe, grant agreement No. 101120393.
 
-  + The contributors of [adversarial-library](https://github.com/jeromerony/adversarial-library), [RobustBench](https://github.com/RobustBench/robustbench) and [Torchattacks](https://github.com/Harry24k/adversarial-attacks-pytorch) for having facilitated the development of this project;
+<img src="git_images/sec4AI4sec.png" alt="sec4ai4sec" style="width:70px;"/> &nbsp;&nbsp; 
+<img src="git_images/elsa.jpg" alt="elsa" style="width:70px;"/> &nbsp;&nbsp; 
+<img src="git_images/FundedbytheEU.png" alt="europe" style="width:240px;" />
+
+
 
