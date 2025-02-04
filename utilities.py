@@ -227,7 +227,7 @@ def show_salient_statistics(experiment_results, name):
 
     summary = {
         "attack_name": attack_name,
-        "ASR": round(asr, 4),
+        "ASR_inf": round(asr, 4),
         "L0 Median": round(l0_median, 4),
         "L0 Mean": round(l0_mean, 4),
         "Time (seconds)": round(time, 4),

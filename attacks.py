@@ -6,7 +6,7 @@ from adv_lib.attacks.stochastic_sparse_attacks import vfga
 from adv_lib.attacks.primal_dual_gradient_descent import pdpgd
 from utils.attack_wrappers import sparsefool, PGD0, sparse_rs, dataset_BB_attack, \
     BB_attack, EAD_attack, sparse_PGD
-from sigma_zero import sigma_zero
+from sigma_zero_attack import sigma_zero
 
 test_attacks = {
     'DTBB': partial(dataset_BB_attack),
