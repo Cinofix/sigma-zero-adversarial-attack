@@ -79,5 +79,7 @@ def sigma_zero(model: nn.Module,
             delta.data[delta.data.abs() < th] = 0
             # update active set
             query_mask[is_adv_below_eps] = False
+            if not any(query_mask):
+                break
 
     return (inputs + best_delta)
